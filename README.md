@@ -3,7 +3,41 @@ Tax Gap Detection & Compliance Validation Service
 
 A Spring Boot–based backend service that processes financial transactions, validates reported tax against expected tax, detects compliance gaps, stores exceptions, and generates optimized reports.
 
+The project is a Tax Gap Detection and Compliance Validation Service built using Spring Boot with a layered architecture.
+
+At a high level, the system processes financial transactions, validates reported tax against expected tax, identifies compliance gaps, stores exceptions, and generates customer-level compliance reports.
+
+We follow a clean layered architecture:
+
+Controller → Service → Repository → Database.
+
+The Controller layer exposes REST APIs for transaction upload and reporting.
+The Service layer contains the core business logic like tax computation, compliance determination, and rule execution.
+The Repository layer uses Spring Data JPA with JPQL constructor projections for optimized reporting queries.
+The Database layer stores transactions and exceptions, with proper indexing for performance.
+
+When a transaction is uploaded:
+
+It is validated and persisted.
+
+Business rules are executed.
+
+The system computes expected tax and tax gap.
+
+Compliance status is determined.
+
+Any violations are stored as structured exceptions.
+
+Each stage can be audit logged.
+
+For reporting, we use database-level aggregation with GROUP BY, SUM, and COUNT instead of in-memory processing. This ensures scalability for large datasets.
+
+The system is designed to be modular, so new validation rules can be added easily without changing core logic.
+
+Overall, the design ensures clean separation of concerns, performance efficiency, and production-ready scalability.”
+
 🚀 How to Run the Application
+
 1️⃣ Prerequisites
 
 Java 17+
