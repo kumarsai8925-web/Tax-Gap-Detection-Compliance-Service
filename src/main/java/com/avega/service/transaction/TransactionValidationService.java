@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.avega.domain.transaction.TransactionType;
-import com.avega.utils.transaction.TransactionRequest;
-import com.avega.utils.transaction.ValidationResult;
+
+import com.avega.utils.dto.transaction.TransactionRequest;
+import com.avega.utils.dto.transaction.ValidationResult;
 import org.springframework.stereotype.Service;
 
 
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransactionValidationService {
 
-	public ValidationResult validateTransaction(TransactionRequest  request) {
+	public ValidationResult validateTransaction(TransactionRequest request) {
 		List<String> errors = new ArrayList<>();
 
 		LocalDate parsedDate = null;
@@ -39,7 +40,7 @@ public class TransactionValidationService {
 		if (request.getTransactionType() == TransactionType.REFUND) {
 		    if (request.getOriginalSaleAmount() == null) {
 		        errors.add("originalSaleAmount is required for refund transactions");
-		    } else if (request.getAmount().compareTo(request.getOriginalSaleAmount()) > 0) {
+		    }else if (request.getAmount().compareTo(request.getOriginalSaleAmount()) > 0) {
 		        errors.add("refund amount cannot exceed original sale amount");
 		    }
 		}
@@ -47,7 +48,11 @@ public class TransactionValidationService {
 
 
 		try {
+			if(request.getDate()== null) {
+				errors.add("Date is Missing");
+			}else {
 			parsedDate = LocalDate.parse(request.getDate());
+			}
 		} catch (DateTimeParseException e) {
 			errors.add("invalid date format");
 		}

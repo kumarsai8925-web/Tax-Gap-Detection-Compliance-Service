@@ -3,14 +3,7 @@ package com.avega.domain.transaction;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "Transactions")
+@Table(name = "Transactions",
+		indexes = {
+				@Index(name = "idx_customer", columnList = "customerId"),
+				@Index(name = "idx_compliance", columnList = "complianceStatus")
+		}
+	)
 public class Transactions {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

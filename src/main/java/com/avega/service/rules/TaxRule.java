@@ -1,7 +1,8 @@
 package com.avega.service.rules;
 
 import com.avega.domain.transaction.Transactions;
-import com.avega.utils.rules.RuleResult;
+
+import com.avega.utils.dto.rules.RuleResult;
 import tools.jackson.databind.JsonNode;
 
 public interface TaxRule {
