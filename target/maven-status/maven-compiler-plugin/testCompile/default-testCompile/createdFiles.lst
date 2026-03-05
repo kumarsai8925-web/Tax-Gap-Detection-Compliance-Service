@@ -1,0 +1,8 @@
+com\avega\test\service\transaction\TransactionServiceTest.class
+com\avega\test\service\rules\RefundValidationRuleTest.class
+com\avega\test\service\transaction\ExceptionServiceTest.class
+com\avega\test\service\rules\GSTSlabViolationRuleTest.class
+com\avega\test\service\rules\HighValueTransactionRuleTest.class
+com\avega\test\service\transaction\TaxCalculationServiceTest.class
+com\avega\test\service\transaction\TransactionValidationServiceTest.class
+com\avega\test\service\rules\TaxRuleEngineTest.class

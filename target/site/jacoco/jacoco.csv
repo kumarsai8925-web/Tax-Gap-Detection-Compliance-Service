@@ -1,0 +1,22 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Tax Gap Detection,com.avega.exception,ExceptionHandler,17,0,0,0,3,0,2,0,2,0
+Tax Gap Detection,com.avega.controller,TransactionExceptionController,24,0,0,0,7,0,3,0,3,0
+Tax Gap Detection,com.avega.controller,ReportingController,29,0,0,0,12,0,5,0,5,0
+Tax Gap Detection,com.avega.controller,TransactionsController,22,0,0,0,6,0,3,0,3,0
+Tax Gap Detection,com.avega.domain.transaction,AuditEventType,0,21,0,0,0,4,0,1,0,1
+Tax Gap Detection,com.avega.domain.transaction,Severity,0,21,0,0,0,4,0,1,0,1
+Tax Gap Detection,com.avega.domain.transaction,ComplianceStatus,0,27,0,0,0,5,0,1,0,1
+Tax Gap Detection,com.avega.domain.transaction,TransactionType,0,21,0,0,0,4,0,1,0,1
+Tax Gap Detection,com.avega.service.rules,RefundValidationRule,0,42,0,6,0,16,0,6,0,3
+Tax Gap Detection,com.avega.service.rules,TaxRuleEngine,0,151,0,8,0,41,0,6,0,2
+Tax Gap Detection,com.avega.service.rules,HighValueTransactionRule,0,35,0,4,0,12,0,5,0,3
+Tax Gap Detection,com.avega.service.rules,GSTSlabViolationRule,0,48,0,8,0,16,0,7,0,3
+Tax Gap Detection,com.avega.service.reporting,ExceptionReportingService,18,0,0,0,6,0,4,0,4,0
+Tax Gap Detection,com.avega.service.reporting,ReportingService,10,0,0,0,4,0,2,0,2,0
+Tax Gap Detection,com.avega.utils.specification,TransactionExceptionSpecification,54,5,10,0,9,1,7,1,2,1
+Tax Gap Detection,com.avega.service.audit,AuditService,37,0,0,0,14,0,2,0,2,0
+Tax Gap Detection,com.avega,TaxGapDetectionApplication,8,0,0,0,3,0,2,0,2,0
+Tax Gap Detection,com.avega.service.transaction,ExceptionService,0,42,0,0,0,14,0,3,0,3
+Tax Gap Detection,com.avega.service.transaction,TransactionService,0,143,0,6,0,42,0,6,0,3
+Tax Gap Detection,com.avega.service.transaction,TaxCalculationService,0,165,0,14,0,46,0,11,0,4
+Tax Gap Detection,com.avega.service.transaction,TransactionValidationService,0,99,0,20,0,29,0,12,0,2

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TaxRuleEngine.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tax Gap Detection</a> &gt; <a href="index.source.html" class="el_package">com.avega.service.rules</a> &gt; <span class="el_source">TaxRuleEngine.java</span></div><h1>TaxRuleEngine.java</h1><pre class="source lang-java linenums">package com.avega.service.rules;
+
+import com.avega.domain.rules.TaxRuleEntity;
+import com.avega.domain.transaction.AuditEventType;
+import com.avega.domain.transaction.Severity;
+import com.avega.domain.transaction.Transactions;
+import com.avega.repo.rules.TaxRuleRepository;
+
+import com.avega.service.audit.AuditService;
+import com.avega.service.transaction.ExceptionService;
+import com.avega.utils.dto.rules.RuleResult;
+import org.springframework.stereotype.Service;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class TaxRuleEngine {
+
+    private final TaxRuleRepository ruleRepository;
+<span class="fc" id="L25">    private final Map&lt;String, com.avega.service.rules.TaxRule&gt; ruleMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L26">    private final ObjectMapper objectMapper = new ObjectMapper();</span>
+    private final ExceptionService exceptionService;
+    private final AuditService auditService;
+
+    public TaxRuleEngine(TaxRuleRepository ruleRepository,
+                         List&lt;com.avega.service.rules.TaxRule&gt; rules,
+<span class="fc" id="L32">                         ExceptionService exceptionService, AuditService auditService) {</span>
+
+<span class="fc" id="L34">        this.ruleRepository = ruleRepository;</span>
+<span class="fc" id="L35">        this.exceptionService = exceptionService;</span>
+<span class="fc" id="L36">        this.auditService = auditService;</span>
+
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        for (com.avega.service.rules.TaxRule rule : rules) {</span>
+<span class="fc" id="L39">            ruleMap.put(rule.getRuleCode(), rule);</span>
+<span class="fc" id="L40">        }</span>
+<span class="fc" id="L41">    }</span>
+
+    public List&lt;String&gt; evaluate(Transactions tx) {
+
+<span class="fc" id="L45">        List&lt;String&gt; violations = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L46">        List&lt;TaxRuleEntity&gt; activeRules = ruleRepository.findByEnabledTrue();</span>
+
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        for (TaxRuleEntity ruleEntity : activeRules) {</span>
+
+<span class="fc" id="L50">            com.avega.service.rules.TaxRule rule = ruleMap.get(ruleEntity.getRuleCode());</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">            if (rule == null) continue;</span>
+
+            try {
+<span class="fc" id="L54">                JsonNode config =</span>
+<span class="fc" id="L55">                        objectMapper.readTree(ruleEntity.getRuleConfigJson());</span>
+
+<span class="fc" id="L57">                RuleResult result = rule.evaluate(tx, config);</span>
+
+<span class="fc" id="L59">                Map&lt;String, Object&gt; detail = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L60">                detail.put(&quot;ruleName&quot;, rule.getRuleCode());</span>
+<span class="fc" id="L61">                detail.put(&quot;violated&quot;, result.isViolated());</span>
+<span class="fc" id="L62">                detail.put(&quot;message&quot;, result.getMessage());</span>
+
+<span class="fc" id="L64">                auditService.logEvent(</span>
+                        AuditEventType.RULE_EXECUTION,
+<span class="fc" id="L66">                        tx.getTransactionId(),</span>
+                        detail
+                );
+
+<span class="fc bfc" id="L70" title="All 2 branches covered.">                if (result.isViolated()) {</span>
+
+<span class="fc" id="L72">                    violations.add(result.getMessage());</span>
+
+
+<span class="fc" id="L75">                    exceptionService.logException(</span>
+<span class="fc" id="L76">                            tx.getTransactionId(),</span>
+<span class="fc" id="L77">                            tx.getCustomerId(),</span>
+<span class="fc" id="L78">                            ruleEntity.getRuleCode(),</span>
+                            Severity.MEDIUM,
+<span class="fc" id="L80">                            result.getMessage()</span>
+                    );
+                }
+
+<span class="fc" id="L84">            } catch (Exception e) {</span>
+
+<span class="fc" id="L86">                violations.add(&quot;Rule execution failed: &quot;</span>
+<span class="fc" id="L87">                        + ruleEntity.getRuleCode());</span>
+
+<span class="fc" id="L89">                exceptionService.logException(</span>
+<span class="fc" id="L90">                        tx.getTransactionId(),</span>
+<span class="fc" id="L91">                        tx.getCustomerId(),</span>
+<span class="fc" id="L92">                        ruleEntity.getRuleCode(),</span>
+                        Severity.HIGH,
+                        &quot;Rule execution failed&quot;
+                );
+<span class="fc" id="L96">            }</span>
+<span class="fc" id="L97">        }</span>
+<span class="fc" id="L98">        return violations;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

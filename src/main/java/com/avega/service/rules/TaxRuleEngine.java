@@ -17,24 +17,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 @Service
 public class TaxRuleEngine {
 
     private final TaxRuleRepository ruleRepository;
-    private final Map<String, TaxRule> ruleMap = new HashMap<>();
+    private final Map<String, com.avega.service.rules.TaxRule> ruleMap = new HashMap<>();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ExceptionService exceptionService;
     private final AuditService auditService;
 
     public TaxRuleEngine(TaxRuleRepository ruleRepository,
-                         List<TaxRule> rules,
+                         List<com.avega.service.rules.TaxRule> rules,
                          ExceptionService exceptionService, AuditService auditService) {
 
         this.ruleRepository = ruleRepository;
         this.exceptionService = exceptionService;
         this.auditService = auditService;
 
-        for (TaxRule rule : rules) {
+        for (com.avega.service.rules.TaxRule rule : rules) {
             ruleMap.put(rule.getRuleCode(), rule);
         }
     }
@@ -46,7 +47,7 @@ public class TaxRuleEngine {
 
         for (TaxRuleEntity ruleEntity : activeRules) {
 
-            TaxRule rule = ruleMap.get(ruleEntity.getRuleCode());
+            com.avega.service.rules.TaxRule rule = ruleMap.get(ruleEntity.getRuleCode());
             if (rule == null) continue;
 
             try {
